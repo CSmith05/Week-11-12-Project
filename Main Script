@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
-# Downloads the library that the analyzer will use, then runs the analyzer
+# Download the library that the analyzer will use, then run the analyzer
 nltk.download('vader_lexicon')
 sia = SentimentIntensityAnalyzer()
 
