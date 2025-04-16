@@ -1,0 +1,33 @@
+import requests
+from bs4 import BeautifulSoup
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# Downloads the library that the analyzer will use, then runs the analyzer
+nltk.download('vader_lexicon')
+sia = SentimentIntensityAnalyzer()
+
+# Scrape the 'BBC News' homepage
+url = 'https://www.bbc.com/news'
+headers = {'User-Agent': 'Mozilla/5.0'}
+response = requests.get(url, headers=headers)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Find potential headlines
+headline_tags = soup.find_all(['h3', 'h2', 'span'])
+
+# Filter for unique headlines
+headlines = []
+seen = set()
+for tag in headline_tags:
+    text = tag.get_text(strip=True)
+    if text and text not in seen and len(text.split()) > 3:
+        seen.add(text)
+        headlines.append(text)
+
+# Analyze the tone of the headline
+results = [(headline, sia.polarity_scores(headline)) for headline in headlines]
+
+# Print the first 10 results
+for headline, score in results[:10]:
+    print(f"'{headline}' -> {score}")
